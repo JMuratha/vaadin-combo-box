@@ -133,7 +133,7 @@
       // The value property is also defined in IronFormElementBehavior, which
       // will mix up the default value if set in the property.
       if (this.value === undefined) {
-        this.value = '';
+        this.value = null;
       }
       Polymer.IronA11yAnnouncer.requestAvailability();
     },
@@ -304,7 +304,7 @@
      * Clears the current value.
      */
     _clear: function() {
-      this.value = '';
+      this.value = null;
     },
 
     /**
