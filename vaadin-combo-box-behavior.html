@@ -484,7 +484,7 @@
       items = items || this.items;
       if (items) {
         for (var i = 0; i < items.length; i++) {
-          if (this._getItemValue(items[i]).toString() === value.toString()) {
+          if (String(this._getItemValue(items[i])) === String(value)) {
             return i;
           }
         }
