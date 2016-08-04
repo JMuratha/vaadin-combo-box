@@ -129,7 +129,7 @@
       'tap': '_onTap'
     },
 
-    ready: function() {
+    ready: function () {
       // The value property is also defined in IronFormElementBehavior, which
       // will mix up the default value if set in the property.
       if (this.value === undefined) {
@@ -138,13 +138,13 @@
       Polymer.IronA11yAnnouncer.requestAvailability();
     },
 
-    _onBlur: function() {
+    _onBlur: function () {
       if (!this._closeOnBlurIsPrevented) {
         this.close();
       }
     },
 
-    _onOverlayDown: function(event) {
+    _onOverlayDown: function (event) {
       // Prevent the focus transfer when user scrolls inside the overlay with mouse drag
       event.preventDefault();
 
@@ -157,15 +157,17 @@
       }
     },
 
-    _onTap: function(e) {
+    _onTap: function (e) {
       this._closeOnBlurIsPrevented = true;
 
       var path = Polymer.dom(e).path;
       if (path.indexOf(this._clearElement) !== -1) {
         this._clear();
-      } else if (path.indexOf(this._toggleElement) !== -1) {
+      }
+      else if (path.indexOf(this._toggleElement) !== -1) {
         this._toggle();
-      } else if (path.indexOf(this.inputElement) !== -1) {
+      }
+      else if (path.indexOf(this.inputElement) !== -1) {
         this._openAsync();
       }
 
@@ -176,7 +178,7 @@
      * Keyboard navigation
      */
 
-    _onKeyDown: function(e) {
+    _onKeyDown: function (e) {
       if (this._isEventKey(e, 'down')) {
         this._closeOnBlurIsPrevented = true;
         this._onArrowDown();
@@ -184,29 +186,32 @@
 
         // prevent caret from moving
         e.preventDefault();
-      } else if (this._isEventKey(e, 'up')) {
+      }
+      else if (this._isEventKey(e, 'up')) {
         this._closeOnBlurIsPrevented = true;
         this._onArrowUp();
         this._closeOnBlurIsPrevented = false;
 
         // prevent caret from moving
         e.preventDefault();
-      } else if (this._isEventKey(e, 'enter')) {
+      }
+      else if (this._isEventKey(e, 'enter')) {
         this._onEnter(e);
-      } else if (this._isEventKey(e, 'esc')) {
+      }
+      else if (this._isEventKey(e, 'esc')) {
         this._onEscape();
       }
     },
 
-    _isEventKey: function(e, k) {
+    _isEventKey: function (e, k) {
       return Polymer.IronA11yKeysBehavior.keyboardEventMatchesKeys(e, k);
     },
 
-    _getItemLabel: function(item) {
+    _getItemLabel: function (item) {
       return this.$.overlay.getItemLabel(item);
     },
 
-    _getItemValue: function(item) {
+    _getItemValue: function (item) {
       var value = this.get(this.itemValuePath, item);
       if (value === undefined || value === null) {
         value = item ? item.toString() : '';
@@ -214,47 +219,50 @@
       return value;
     },
 
-    _onArrowDown: function() {
+    _onArrowDown: function () {
       if (this.opened) {
         if (this.$.overlay._items) {
           this._focusedIndex = Math.min(this.$.overlay._items.length - 1, this._focusedIndex + 1);
           this._prefillFocusedItemLabel();
         }
-      } else {
+      }
+      else {
         this.open();
       }
     },
 
-    _onArrowUp: function() {
+    _onArrowUp: function () {
       if (this.opened) {
         if (this._focusedIndex > -1) {
           this._focusedIndex = Math.max(0, this._focusedIndex - 1);
-        } else {
+        }
+        else {
           if (this.$.overlay._items) {
             this._focusedIndex = this.$.overlay._items.length - 1;
           }
         }
 
         this._prefillFocusedItemLabel();
-      } else {
+      }
+      else {
         this.open();
       }
     },
 
-    _prefillFocusedItemLabel: function() {
+    _prefillFocusedItemLabel: function () {
       if (this._focusedIndex > -1) {
         this._inputElementValue = this._getItemLabel(this.$.overlay._focusedItem);
         this._setSelectionRange();
       }
     },
 
-    _setSelectionRange: function() {
+    _setSelectionRange: function () {
       if (this.inputElement.setSelectionRange) {
         this.inputElement.setSelectionRange(0, this._inputElementValue.length);
       }
     },
 
-    _onEnter: function(e) {
+    _onEnter: function (e) {
       // should close on enter when custom values are allowed, input field is cleared, or when an existing
       // item is focused with keyboard.
       if (this.opened && (this.allowCustomValue || this._inputElementValue === '' || this._focusedIndex > -1)) {
@@ -265,12 +273,13 @@
       }
     },
 
-    _onEscape: function() {
+    _onEscape: function () {
       if (this.opened) {
         if (this._focusedIndex > -1) {
           this._focusedIndex = -1;
           this._revertInputValue();
-        } else {
+        }
+        else {
           this.cancel();
         }
       }
@@ -283,7 +292,7 @@
     /**
      * Opens the dropdown list asynchronously.
      */
-    _openAsync: function() {
+    _openAsync: function () {
       // Needed for MS Edge. Otherwise, it does not pop the virtual keyboard up
       // when tapping the combobox that has non-empty value.
       this.async(this.open);
@@ -292,10 +301,11 @@
     /**
      * Opens and closes the dropdown list.
      */
-    _toggle: function() {
+    _toggle: function () {
       if (this.opened) {
         this.close();
-      } else {
+      }
+      else {
         this.open();
       }
     },
@@ -303,37 +313,40 @@
     /**
      * Clears the current value.
      */
-    _clear: function() {
+    _clear: function () {
       this.value = null;
     },
 
     /**
      * Reverts back to original value.
      */
-    cancel: function() {
+    cancel: function () {
       this._inputElementValue = this._getItemLabel(this.selectedItem);
       this.close();
     },
 
-    _onOpened: function() {
+    _onOpened: function () {
       this.$.overlay.hidden = !this._hasItems(this.$.overlay._items);
       this.$.overlay.notifyResize();
       this.$.overlay.adjustScrollPosition();
     },
 
-    _onClosed: function() {
+    _onClosed: function () {
       if (this._focusedIndex > -1) {
         this.$.overlay._selectItem(this._focusedIndex);
         this._inputElementValue = this._getItemLabel(this.selectedItem);
-      } else if (this._inputElementValue === '') {
+      }
+      else if (this._inputElementValue === '') {
         this._clear();
-      } else {
+      }
+      else {
         if (this.allowCustomValue) {
           var e = this.fire('custom-value-set', this._inputElementValue, {cancelable: true});
           if (!e.defaultPrevented) {
             this.value = this._inputElementValue;
           }
-        } else {
+        }
+        else {
           this._inputElementValue = this._getItemLabel(this.selectedItem);
         }
       }
@@ -347,7 +360,7 @@
      *  Filtering and items handling
      */
 
-    _inputValueChanged: function(e) {
+    _inputValueChanged: function (e) {
       // Handle only input events from our inputElement.
       if (Polymer.dom(e).path.indexOf(this.inputElement) !== -1) {
         if (this._filter === this._inputElementValue) {
@@ -355,7 +368,8 @@
           // Afterwards, input value might be changed to the same value as used in filtering.
           // In situation like these, we need to make sure all the filter changes handlers are run.
           this._filterChanged(this._filter);
-        } else {
+        }
+        else {
           this._filter = this._inputElementValue;
         }
 
@@ -365,7 +379,7 @@
       }
     },
 
-    _clearSelectionRange: function() {
+    _clearSelectionRange: function () {
       // Setting selection range focuses and/or moves the caret in some browsers,
       // and there's no need to modify the selection range if the input isn't focused anyway.
       //
@@ -377,12 +391,12 @@
       }
     },
 
-    _focusedInput: function() {
+    _focusedInput: function () {
       // Use either light DOM input or one from local DOM.
-      return Polymer.dom(this).querySelector('input:focus') || Polymer.dom(this.root).querySelector('input:focus');
+      return Polymer.dom(this).querySelector('input:focus') || Polymer.dom(this.root).querySelector('input:focus');
     },
 
-    _filterChanged: function(filter) {
+    _filterChanged: function (filter) {
       this.unlisten(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
 
       this._setItems(this._filterItems(this.items, filter));
@@ -391,29 +405,31 @@
       this.listen(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
 
       // async needed to reposition correctly after filtering
-      this.async(function() {
+      this.async(function () {
         this.$.overlay.notifyResize();
       }.bind(this));
     },
 
-    _revertInputValue: function() {
+    _revertInputValue: function () {
       if (this._filter !== '') {
         this._inputElementValue = this._filter;
-      } else {
+      }
+      else {
         this._inputElementValue = this._getItemLabel(this.selectedItem);
       }
 
       this._clearSelectionRange();
     },
 
-    _valueChanged: function(value) {
+    _valueChanged: function (value) {
       this.hasValue = !!value;
 
       var valueIndex = this._indexOfValue(value);
       var item = valueIndex > -1 && this.items[valueIndex];
       if (this.$.overlay._items && item && this.$.overlay._items.indexOf(item) > -1) {
         this.$.overlay._selectItem(item);
-      } else {
+      }
+      else {
         this._inputElementValue = this.allowCustomValue ? value : '';
         this._setSelectedItem(null);
         this._focusedIndex = -1;
@@ -424,27 +440,27 @@
       this.close();
     },
 
-    _itemsChanged: function(change) {
+    _itemsChanged: function (change) {
       if (change && change.indexSplices) {
         this._setItems(change.indexSplices[0].object);
       }
     },
 
-    _filterItems: function(arr, filter) {
+    _filterItems: function (arr, filter) {
       if (!arr) {
         return arr;
       }
 
-      return arr.filter((function(item) {
+      return arr.filter((function (item) {
         filter = filter.toString().toLowerCase() || '';
 
         // Check if item contains input value.
         return this._getItemLabel(item).toString().toLowerCase()
-          .indexOf(filter) > -1;
+                        .indexOf(filter) > -1;
       }).bind(this));
     },
 
-    _setItems: function(items) {
+    _setItems: function (items) {
       //TODO: There is something wrong with observers and using set function
       // see here: https://github.com/Polymer/polymer/issues/3254
       //As a workaround setting/notifying the observer with the value undefined helps
@@ -460,13 +476,13 @@
       this.$.overlay.notifyResize();
     },
 
-    _hasItems: function(array) {
+    _hasItems: function (array) {
       return array && array.length;
     },
 
-    _indexOfValue: function(value, items) {
+    _indexOfValue: function (value, items) {
       items = items || this.items;
-      if (items && value) {
+      if (items) {
         for (var i = 0; i < items.length; i++) {
           if (this._getItemValue(items[i]).toString() === value.toString()) {
             return i;
@@ -477,7 +493,7 @@
       return -1;
     },
 
-    _selectedItemChanged: function(event, detail) {
+    _selectedItemChanged: function (event, detail) {
       if (detail.value !== null) {
         this._setSelectedItem(detail.value);
         this._inputElementValue = this._getItemLabel(this.selectedItem);
@@ -495,17 +511,17 @@
      *
      * @return {boolean}
      */
-    _getValidity: function() {
+    _getValidity: function () {
       if (this.inputElement.validate) {
         return this.inputElement.validate();
       }
     },
 
-    _preventDefault: function(e) {
+    _preventDefault: function (e) {
       e.preventDefault();
     },
 
-    _stopPropagation: function(e) {
+    _stopPropagation: function (e) {
       e.stopPropagation();
     }
   };
