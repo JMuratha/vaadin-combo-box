@@ -202,7 +202,8 @@ Custom property | Description | Default
         _focused-index="[[_focusedIndex]]"
         _item-label-path="[[itemLabelPath]]"
         on-down="_onOverlayDown"
-        vertical-offset="2">
+        vertical-offset="2"
+    overlay-width="{{overlayWidth}}">
     </vaadin-combo-box-overlay>
   </template>
 </dom-module>
@@ -321,6 +322,10 @@ Custom property | Description | Default
 
       size: {
         type: Number
+      },
+
+      overlayWidth: {
+        type: String
       }
 
     },

@@ -29,6 +29,10 @@
       _alignedAbove: {
         type: Boolean,
         value: false
+      },
+
+      overlayWidth: {
+        type: String
       }
     },
 
@@ -36,22 +40,22 @@
       'iron-resize': '_setPosition'
     },
 
-    created: function() {
+    created: function () {
       this._boundSetPosition = this._setPosition.bind(this);
     },
 
-    _unwrapIfNeeded: function(element) {
+    _unwrapIfNeeded: function (element) {
       var isWrapped = Polymer.Settings.hasShadow && !Polymer.Settings.nativeShadow;
       return isWrapped ? window.unwrap(element) : element;
     },
 
-    _processPendingMutationObserversFor: function(node) {
+    _processPendingMutationObserversFor: function (node) {
       if (!Polymer.Settings.useNativeCustomElements) {
         CustomElements.takeRecords(node);
       }
     },
 
-    _moveTo: function(target) {
+    _moveTo: function (target) {
       // `attached` and `detached` callbacks are unreliable with Shadow DOM polyfill. They are asynchonous and sometimes
       // cancel each other. We need to process mutation observers synchonously after moving the overlay. :-(
       var oldParentNode = this.parentNode;
@@ -75,39 +79,42 @@
         this.style.position = this._isPositionFixed(this.positionTarget) ? 'fixed' : 'absolute';
         window.addEventListener('scroll', this._boundSetPosition, true);
         this._setPosition();
-      } else {
+      }
+      else {
         window.removeEventListener('scroll', this._boundSetPosition, true);
       }
     },
 
-    _verticalOffset: function(overlayRect, targetRect) {
+    _verticalOffset: function (overlayRect, targetRect) {
       if (this._alignedAbove) {
         return -overlayRect.height;
-      } else {
+      }
+      else {
         return targetRect.height + this.verticalOffset;
       }
     },
 
-    _isPositionFixed: function(element) {
+    _isPositionFixed: function (element) {
       var offsetParent = element.offsetParent;
 
       return window.getComputedStyle(this._unwrapIfNeeded(element)).position === 'fixed' ||
-        (offsetParent && this._isPositionFixed(offsetParent));
+              (offsetParent && this._isPositionFixed(offsetParent));
     },
 
-    _maxHeight: function(targetRect) {
+    _maxHeight: function (targetRect) {
       var margin = 8;
       var minHeight = 116; // Height of two items in combo-box
       var bottom = Math.min(window.innerHeight, document.body.scrollHeight - document.body.scrollTop);
 
       if (this._alignedAbove) {
         return Math.max(targetRect.top - margin + Math.min(document.body.scrollTop, 0), minHeight) + 'px';
-      } else {
+      }
+      else {
         return Math.max(bottom - targetRect.bottom - margin, minHeight) + 'px';
       }
     },
 
-    _setPosition: function(e) {
+    _setPosition: function (e) {
       var parent = this._unwrapIfNeeded(this.parentElement);
       if ((!e || e.target.contains && (e.target.contains(this) || e.target.contains(this.positionTarget))) && parent === document.body) {
         var targetRect = this.positionTarget.getBoundingClientRect();
@@ -122,25 +129,25 @@
         var overlayRect = this.getBoundingClientRect();
         this._translateX = targetRect.left - overlayRect.left + (this._translateX || 0);
         this._translateY = targetRect.top - overlayRect.top + (this._translateY || 0) +
-          this._verticalOffset(overlayRect, targetRect);
+                this._verticalOffset(overlayRect, targetRect);
 
         var _devicePixelRatio = window.devicePixelRatio || 1;
         this._translateX = Math.round(this._translateX * _devicePixelRatio) / _devicePixelRatio;
         this._translateY = Math.round(this._translateY * _devicePixelRatio) / _devicePixelRatio;
         this.translate3d(this._translateX + 'px', this._translateY + 'px', '0');
 
-        this.style.width = this.positionTarget.clientWidth + 'px';
+        this.style.width = this.overlayWidth ? this.overlayWidth : this.positionTarget.clientWidth + 'px';
 
         this.updateViewportBoundaries();
       }
     },
 
-    _shouldAlignAbove: function() {
+    _shouldAlignAbove: function () {
       var spaceBelow = (
-          window.innerHeight -
-          this.positionTarget.getBoundingClientRect().bottom -
-          Math.min(document.body.scrollTop, 0)
-        ) / window.innerHeight;
+                      window.innerHeight -
+                      this.positionTarget.getBoundingClientRect().bottom -
+                      Math.min(document.body.scrollTop, 0)
+              ) / window.innerHeight;
 
       return spaceBelow < 0.30;
     }
