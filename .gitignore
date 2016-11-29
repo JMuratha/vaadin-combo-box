@@ -2,3 +2,4 @@ bower_components
 node_modules
 directives/typings
 .idea/
+test/angular2/typings

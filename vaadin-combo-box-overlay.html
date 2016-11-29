@@ -63,12 +63,11 @@
   </style>
 
   <template>
-    <div id="scroller" scroller="[[_getScroller()]]">
+    <div id="scroller" scroller="[[_getScroller()]]" on-tap="_stopPropagation">
       <iron-list
           id="selector"
           touch-device$="[[touchDevice]]"
           role="listbox"
-          data-selection$="[[_ariaActiveIndex]]"
           on-touchend="_preventDefault"
           selected-item="{{_selectedItem}}"
           items="[[_items]]"
@@ -76,12 +75,11 @@
           scroll-target="[[_getScroller()]]">
         <template>
           <div class="item"
-              id$="it[[index]]"
               selected$="[[selected]]"
               role$="[[_getAriaRole(index)]]"
               aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]"
               focused$="[[_isItemFocused(_focusedIndex,index)]]">
-              [[getItemLabel(item)]]
+            [[getItemLabel(item)]]
           </div>
         </template>
       </iron-list>
@@ -134,12 +132,6 @@
       _focusedItem: {
         type: String,
         computed: '_getFocusedItem(_focusedIndex)'
-      },
-
-      _ariaActiveIndex: {
-        type: Number,
-        notify: true,
-        computed: '_getAriaActiveIndex(_focusedIndex)'
       },
 
       _itemLabelPath: {
@@ -202,14 +194,6 @@
       return focusedIndex == itemIndex;
     },
 
-    _getAriaActiveIndex: function(focusedIndex) {
-      if (focusedIndex >= 0) {
-        return 'it' + focusedIndex;
-      }
-
-      return false;
-    },
-
     _getAriaSelected: function(focusedIndex, itemIndex) {
       return this._isItemFocused(focusedIndex, itemIndex).toString();
     },
@@ -247,6 +231,11 @@
         targetIndex = this.$.selector.firstVisibleIndex;
       }
       this.$.selector.scrollToIndex(Math.max(0, targetIndex));
+    },
+
+    ensureItemsRendered: function() {
+      this.$.selector.flushDebouncer('_debounceTemplate');
+      this.$.selector._render && this.$.selector._render();
     },
 
     adjustScrollPosition: function() {
@@ -335,6 +324,10 @@
 
     _preventDefault: function(e) {
       e.preventDefault();
+    },
+
+    _stopPropagation: function(e) {
+      e.stopPropagation();
     }
   });
 </script>

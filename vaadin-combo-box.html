@@ -38,13 +38,13 @@ Custom property | Description | Default
 `--vaadin-combo-box-overlay-max-height` | Property that determines the max height of overlay | `65vh`
 
 @element vaadin-combo-box
+@demo demo/index.html
 -->
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="../iron-a11y-announcer/iron-a11y-announcer.html">
-<link rel="import" href="../iron-iconset-svg/iron-iconset-svg.html">
 <link rel="import" href="../paper-input/paper-input-container.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="vaadin-combo-box-behavior.html">
@@ -131,9 +131,8 @@ Custom property | Description | Default
           no-label-float="[[noLabelFloat]]"
           always-float-label="[[_computeAlwaysFloatLabel(alwaysFloatLabel,placeholder)]]"
           auto-validate$="[[autoValidate]]"
-          invalid="[[invalid]]"
-          on-down="_preventDefault">
-      <label id="label" hidden$="[[!label]]" aria-hidden="true" on-tap="_openAsync">[[label]]</label>
+          invalid="[[invalid]]">
+      <label on-down="_preventDefault" id="label" hidden$="[[!label]]" aria-hidden="true" on-tap="_openAsync">[[label]]</label>
 
       <content select="[prefix]"></content>
 
@@ -145,11 +144,9 @@ Custom property | Description | Default
           autocomplete="off"
           autocapitalize="none"
           bind-value="{{_inputElementValue}}"
-          aria-labelledby="label"
-          aria-activedescendant$="[[_ariaActiveIndex]]"
+          aria-label$="[[label]]"
           aria-expanded$="[[_getAriaExpanded(opened)]]"
           aria-autocomplete="list"
-          aria-owns="overlay"
           disabled$="[[disabled]]"
           invalid="{{invalid}}"
           prevent-invalid-input="[[preventInvalidInput]]"
@@ -173,6 +170,7 @@ Custom property | Description | Default
         <paper-icon-button
             id="clearIcon"
             tabindex="-1"
+            aria-label="Clear"
             icon="vaadin-combo-box:clear"
             on-down="_preventDefault"
             class="clear-button small">
@@ -184,7 +182,8 @@ Custom property | Description | Default
             id="toggleIcon"
             tabindex="-1"
             icon="vaadin-combo-box:arrow-drop-down"
-            aria-controls="overlay"
+            aria-label="Toggle"
+            aria-expanded$="[[_getAriaExpanded(opened)]]"
             on-down="_preventDefault"
             class="toggle-button rotate-on-open">
         </paper-icon-button>
@@ -197,13 +196,13 @@ Custom property | Description | Default
 
     <vaadin-combo-box-overlay
         id="overlay"
-        _aria-active-index="{{_ariaActiveIndex}}"
         position-target="[[_getPositionTarget()]]"
         _focused-index="[[_focusedIndex]]"
         _item-label-path="[[itemLabelPath]]"
         on-down="_onOverlayDown"
+        on-mousedown="_preventDefault"
         vertical-offset="2"
-    overlay-width="{{overlayWidth}}">
+        overlay-width="{{overlayWidth}}">
     </vaadin-combo-box-overlay>
   </template>
 </dom-module>
