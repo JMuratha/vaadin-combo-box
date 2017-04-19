@@ -61,7 +61,7 @@
 
       describe('value property', function() {
         it('should have empty string by default', function() {
-          expect(comboBox.value).to.eql('');
+          expect(comboBox.value).to.eql(null);
         });
 
         it('should be able to be set before items', function() {
@@ -151,7 +151,7 @@
             comboBox.$.input.bindValue = 'foo';
             comboBox.close();
 
-            expect(comboBox.value).to.be.empty;
+            expect(comboBox.value).to.eql(null);
           });
         });
       });
