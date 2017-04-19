@@ -27,23 +27,14 @@
     function getInput() {
       return comboBox.$.input;
     }
-    function getLabel() {
-      return comboBox.$.label;
-    }
     function getToggleIcon() {
       return comboBox.$.toggleIcon;
     }
     function getClearIcon() {
       return comboBox.$.clearIcon;
     }
-    function getSelector() {
-      return comboBox.$.overlay.$.selector;
-    }
-    function getFocusedIndex() {
-      return comboBox._focusedIndex;
-    }
     function getItemElement(i) {
-      return comboBox.$.overlay.$.selector.querySelectorAll('.item')[i];
+      return comboBox.$.overlay.$.selector.querySelectorAll('vaadin-combo-box-item')[i];
     }
 
     function arrowDown() {
@@ -98,42 +89,12 @@
       });
 
       it('should set selection aria attributes when focusing an item', function() {
-        getSelector().selectedItem = 'foo';
-        arrowDown();
+        comboBox.value = 'foo';
+        arrowDown(); // 'focus moves to 2nd item'
 
         expect(getItemElement(0).getAttribute('role')).to.equal('option');
-        expect(getItemElement(0).getAttribute('aria-selected')).to.equal('true');
-        expect(getItemElement(1).getAttribute('aria-selected')).to.equal('false');
-      });
-
-      it('should change the input value with atomic change', function(done) {
-        getSelector().selectedItem = 'foo';
-
-        getInput().addEventListener('bind-value-changed', function() {
-          expect(getInput().getAttribute('aria-atomic')).to.equal('true');
-          done();
-        });
-
-        arrowDown();
-        arrowDown();
-      });
-
-      it('should preserve aria-atomic attribute in the input', function() {
-        getInput().setAttribute('aria-atomic', 'false');
-
-        getSelector().selectedItem = 'foo';
-        arrowDown();
-        arrowDown();
-
-        expect(getInput().getAttribute('aria-atomic')).to.equal('false');
-      });
-
-      it('should clean-up aria-atomic attribute in the input if was not set', function() {
-        getSelector().selectedItem = 'foo';
-        arrowDown();
-        arrowDown();
-
-        expect(getInput().hasAttribute('aria-atomic')).to.be.false;
+        expect(getItemElement(0).getAttribute('aria-selected')).to.equal('false');
+        expect(getItemElement(1).getAttribute('aria-selected')).to.equal('true');
       });
     });
 
